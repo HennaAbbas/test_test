@@ -6,7 +6,8 @@ jobs:
     executor: sam/default
     steps:
       - run: echo "hello world"
-      - run: echo << parameter.stack-name >>
+      - run: echo << parameters.stack-name >>
+      
 orbs:
   sam: circleci/aws-sam-serverless@1.0.1
 version: 2.1
