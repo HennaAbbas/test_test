@@ -39,9 +39,6 @@ workflows:
             branches:
               only:
                 - master
-            branches:
-              ignore:
-                - /.*/
       - deploy:
           requires:
             - hold-for-approval
