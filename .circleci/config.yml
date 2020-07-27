@@ -5,48 +5,40 @@ jobs:
         type: string
     executor: sam/default
     steps:
-      - run: |
-          # This step is used only for testing builds locally
-          # Needed to work around this issue:  https://github.com/CircleCI-Public/circleci-cli/issues/281
-          if [[ ${CIRCLE_SHELL_ENV} =~ "localbuild" ]]; then
-            git config --global core.sshCommand 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
-            git clone $CIRCLE_REPOSITORY_URL /tmp/_circleci_local_build_repo
-          fi
-      - checkout
-      - sam/install
-      - run: sam deploy --stack-name << parameters.stack-name >> --no-confirm-changeset --no-fail-on-empty-changeset
+      - run: echo "hello world"
+      - run: echo << parameter.stack-name >>
 orbs:
   sam: circleci/aws-sam-serverless@1.0.1
 version: 2.1
 workflows:
   version: 2
-  dev:
-    jobs:
-      - deploy:
-          stack-name: FleetManagementDev
-          filters:
-            branches:
-              only:
-                - master
-  beta:
-    jobs:
-      - deploy:
-          stack-name: FleetManagementBeta
-          filters:
-            tags:
-              only:
-                - /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)-beta$/
-            branches:
-              ignore:
-                - /.*/
+#   dev:
+#     jobs:
+#       - deploy:
+#           stack-name: FleetManagementDev
+#           filters:
+#             branches:
+#               only:
+#                 - master
+#   beta:
+#     jobs:
+#       - deploy:
+#           stack-name: FleetManagementBeta
+#           filters:
+#             tags:
+#               only:
+#                 - /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)-beta$/
+#             branches:
+#               ignore:
+#                 - /.*/
   prod:
     jobs:
       - hold-for-approval:
           type: approval
           filters:
-            tags:
+            branches:
               only:
-                - /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+                - master
             branches:
               ignore:
                 - /.*/
